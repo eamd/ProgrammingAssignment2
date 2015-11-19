@@ -5,6 +5,41 @@
 
 makeCacheMatrix <- function(x = matrix()) {
 
+    # The cached matrix variable. Calling functions can check if this is set, and
+    # if it is, avoid calling the solve function repeatedly.
+    # This variable is reset to null every time a new matrix is created.
+    im <- NULL
+    
+    set <- function(y) {
+      x <<- y # assign matrix define to a local variable, x
+      print(y)
+      im <<- NULL
+    }
+    
+    get <- function() x
+    
+    #
+    # apply the solve function passed in the 'im' parameter
+    # the result of solve is assign to the 'im' variable 
+    # defined as part of makeCacheMatrix
+    #
+    setinverse <- function(im) {
+      im <<- solve(im)
+    }
+    
+    #
+    # Returns the value store in 'im' defined at the function level. The result is returned
+    # as a matrix.
+    #
+    getinverse <- function() im
+    
+    #
+    # Return the a list that define the four functions needed to get/set 
+    # the original matrix and the inverted matrix
+    # This forces the user of the function to access or set data in a controlled manner
+    #
+    list(get=get, set=set, setinverse=setinverse, getinverse=getinverse)
+    
 }
 
 
@@ -12,4 +47,15 @@ makeCacheMatrix <- function(x = matrix()) {
 
 cacheSolve <- function(x, ...) {
         ## Return a matrix that is the inverse of 'x'
-}
+  
+  # Check to make sure the inverted matrix hasn't already been calculated
+  tmpM <- x$getinverse()
+  if(!is.null(tmpM)) {
+    message('retrieving cached inverted matrix')
+    return(im)
+  }
+
+  tmpM = x$get()
+  im <<- x$setinverse(tmpM)
+  return(im)
+  }

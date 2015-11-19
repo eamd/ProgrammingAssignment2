@@ -1,8 +1,6 @@
 makeVector <- function(x = numeric()) {
-  ##
+
   ## initialize a variable to contain the mean of the vector
-  ##
-  m <- NULL
   m <- NULL
   
   ## store the data vector to the special vector and initialize the mean variable
