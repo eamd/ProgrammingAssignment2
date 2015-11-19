@@ -1,8 +1,21 @@
 ## Put comments here that give an overall description of what your
 ## functions do
 
-## Write a short comment describing this function
-
+## makeCacheMatrix prepares a list construct to represent a matrix object that has the 
+## the ability to cache an already calculated inverted matrix.
+##
+## The function has four functions total - two for getting and setting the original matrix
+## and two for getting and setting the calculated inverted matrix of the original matrix.
+##
+## get: retrieves the stored matrix from within the function's environment.
+## set: stores the passed matrix within the special matrix function's environment.
+##
+## getinverse: restrieves the inverted matrix stored within the function's environment.
+## setinverse: stores the inverted matrix within the function's environment.
+##
+## The function returns an R list, with each element in the list a function definition that is executed when
+## called. To reference these functions, list_variable_name$function()
+##
 makeCacheMatrix <- function(x = matrix()) {
 
     # The cached matrix variable. Calling functions can check if this is set, and
