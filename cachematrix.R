@@ -1,82 +1,92 @@
-## Put comments here that give an overall description of what your
-## functions do
-
-## makeCacheMatrix prepares a list construct to represent a matrix object that has the 
-## the ability to cache an already calculated inverted matrix.
 ##
-## The function has four functions total - two for getting and setting the original matrix
-## and two for getting and setting the calculated inverted matrix of the original matrix.
+## makeCacheMatrix
+## parameters: x - a matrix, the defaut value is a matrix with no elements
+## 
+## Caches the inverse of the matrix passed to it. By caching the inverse,
+## as long as the matrix doesn't change, the function won't have to recaculate
+## the inverse. If a different matrix is passed, the inverse will need to be
+## recacluated.
 ##
-## get: retrieves the stored matrix from within the function's environment.
-## set: stores the passed matrix within the special matrix function's environment.
-##
-## getinverse: restrieves the inverted matrix stored within the function's environment.
-## setinverse: stores the inverted matrix within the function's environment.
-##
-## The function returns an R list, with each element in the list a function definition that is executed when
-## called. To reference these functions, list_variable_name$function()
+## If no matrix is passed, the function will default to an empty matrix.
+## If something other than a matrix is passed, such as a numeric vector,
+## the function will return NULL. That way, calling functions can
+## handle the error gracefully.
 ##
 makeCacheMatrix <- function(x = matrix()) {
 
+  ##
+  ## Check to make sure that what is passed in the x variable is a matrix
+  ## If x is not of class, matrix, a message is returned to the user indicating the status
+  ## and the function will return the value of x.
+  ##
+  if(!is.matrix(x)) {
+    message('x must be a matrix')
+    x <- NULL
+    return(x)
+  }
   
-    if(!is.matrix(x)) {
-      message('x must be a matrix')
-      return(x)
-    }
-    basem <- x
-  
-    # The cached matrix variable. Calling functions can check if this is set, and
-    # if it is, avoid calling the solve function repeatedly.
-    # This variable is reset to null every time a new matrix is created.
-    im <- NULL
 
-    
-    set <- function(y) {
-      x <<- y # assign matrix define to a local variable, x
-      print(y)
-      im <<- NULL
-    }
-    
-    get <- function() x
-    
-    #
-    # apply the solve function passed in the 'im' parameter
-    # the result of solve is assign to the 'im' variable 
-    # defined as part of makeCacheMatrix
-    #
-    setinverse <- function(im) {
-      im <<- solve(im)
-    }
-    
-    #
-    # Returns the value store in 'im' defined at the function level. The result is returned
-    # as a matrix.
-    #
-    getinverse <- function() im
-    
-    #
-    # Return the a list that define the four functions needed to get/set 
-    # the original matrix and the inverted matrix
-    # This forces the user of the function to access or set data in a controlled manner
-    #
-    list(get=get, set=set, setinverse=setinverse, getinverse=getinverse)
+  ##
+  ## im is the the variable for holding the cached inverse matrix.
+  ## im is initialized to NULL.
+  ##
+  im <- NULL
+  
+  ##
+  ## There are 4 helper functions for setting and retrieving from the special matrix object"
+  ##
+  ## set(y) - assign the matrix to the special matrix object
+  ## setinverse(im) - assign the inverse of the passed matrix, to the im cache variable
+  ##
+  ## get() - retrieve the matrix stored in the special matrix object
+  ## getinvers() - retrieve the inverse matrix from the im cache variable
+  ##
+  
+  set <- function(y) {
+    x <<- y # assign the value of y to x located in the parent environmentr
+    im <<- NULL # initialize im in the parent environment (cache of the inverse) to NULL
+  }
+  
+  get <- function() {
+    x # retrieve the matrix stored in the special matrix object and return to the function name get
+  }
+
+  setinverse <- function(matrix) {
+    im <<- matrix # calculate the inverse of the matrix and place in the im cache variable
+  }
+  
+  getinverse <- function() {
+    im # return the value of the inverse cache, im to the function name getinverse
+  }
+  
+  
+  #
+  # return a list of four elements
+  #
+  list(get=get, set=set, setinverse=setinverse, getinverse=getinverse)
     
 }
 
 
 ## Write a short comment describing this function
-
+##
+## cacheSolve
+## parameters: at least one matrix, x
+## 
+## cacheSolve computes the inverse of a matrix passed to it. The matrix is stored as a special
+## matrix created by the function makeCacheMatrix
+##
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
-  
-  # Check to make sure the inverted matrix hasn't already been calculated
+  # Check to make sure the inverted matrix hasn't already been computed
   tmpM <- x$getinverse()
+  
   if(!is.null(tmpM)) {
-    message('retrieving cached inverted matrix')
-    return(im)
+    message('retrieving cached inverted matrix') # the inverse has already been computed, return it
+    return(tmpM)
   }
 
-  tmpM = x$get()
-  im <<- x$setinverse(tmpM)
-  return(im)
+  # the inverse needs to be computed. 
+  tmpM = x$get() # get the original matrix
+  im <- solve(tmpM) # compute the inverse
+  x$setinverse(im)
   }
