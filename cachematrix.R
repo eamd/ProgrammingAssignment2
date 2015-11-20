@@ -18,16 +18,18 @@
 ##
 makeCacheMatrix <- function(x = matrix()) {
 
-    # The cached matrix variable. Calling functions can check if this is set, and
-    # if it is, avoid calling the solve function repeatedly.
-    # This variable is reset to null every time a new matrix is created.
-    im <- NULL
-    
+  
     if(!is.matrix(x)) {
       message('x must be a matrix')
       return(x)
     }
     basem <- x
+  
+    # The cached matrix variable. Calling functions can check if this is set, and
+    # if it is, avoid calling the solve function repeatedly.
+    # This variable is reset to null every time a new matrix is created.
+    im <- NULL
+
     
     set <- function(y) {
       x <<- y # assign matrix define to a local variable, x
