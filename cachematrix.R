@@ -23,6 +23,12 @@ makeCacheMatrix <- function(x = matrix()) {
     # This variable is reset to null every time a new matrix is created.
     im <- NULL
     
+    if(!is.matrix(x)) {
+      message('x must be a matrix')
+      return(x)
+    }
+    basem <- x
+    
     set <- function(y) {
       x <<- y # assign matrix define to a local variable, x
       print(y)
