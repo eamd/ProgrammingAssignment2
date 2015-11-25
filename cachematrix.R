@@ -85,8 +85,10 @@ cacheSolve <- function(x, ...) {
     return(tmpM)
   }
 
-  # the inverse needs to be computed. 
+  # the inverse needs to be computed.
   tmpM = x$get() # get the original matrix
   im <- solve(tmpM) # compute the inverse
   x$setinverse(im)
-  }
+  im
+}
+
